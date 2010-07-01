@@ -31,9 +31,7 @@ public abstract class BaseBuffer {
 
 	public BaseBuffer(final int pByteCount) {
 		this.mByteCount = pByteCount;
-		final ByteBuffer byteBuffer = this.allocateByteBuffer(pByteCount);
-		byteBuffer.order(ByteOrder.nativeOrder());
-		this.mFloatBuffer = byteBuffer.asFloatBuffer();
+		this.mFloatBuffer = allocateByteBuffer(pByteCount).order(ByteOrder.nativeOrder()).asFloatBuffer();
 	}
 
 	// ===========================================================
@@ -57,7 +55,7 @@ public abstract class BaseBuffer {
 	// ===========================================================
 
 	private ByteBuffer allocateByteBuffer(final int pByteCount) {
-		if(Build.VERSION.SDK_INT == 3) {
+		if(Build.VERSION.SDK.equals("3")) {
 			return ByteBuffer.allocate(pByteCount);
 		} else {
 			return ByteBuffer.allocateDirect(pByteCount);
