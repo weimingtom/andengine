@@ -1,0 +1,155 @@
+package org.anddev.andengine.entity.menu;
+
+import java.util.ArrayList;
+
+import org.anddev.andengine.engine.camera.Camera;
+import org.anddev.andengine.entity.CameraScene;
+import org.anddev.andengine.entity.Scene;
+import org.anddev.andengine.entity.Scene.IOnAreaTouchListener;
+
+import android.view.MotionEvent;
+
+/**
+ * @author Nicolas Gramlich
+ * @since 20:06:51 - 01.04.2010
+ */
+public class MenuScene extends CameraScene implements IOnAreaTouchListener {
+	// ===========================================================
+	// Constants
+	// ===========================================================
+
+	// ===========================================================
+	// Fields
+	// ===========================================================
+
+	private final ArrayList<MenuItem> mMenuItems = new ArrayList<MenuItem>();
+
+	private IOnMenuItemClickListener mOnMenuItemClickListener;
+
+	private IMenuAnimator mMenuAnimator = IMenuAnimator.DEFAULT;
+
+	// ===========================================================
+	// Constructors
+	// ===========================================================
+
+	public MenuScene() {
+		this(null, null);
+	}
+
+	public MenuScene(final IOnMenuItemClickListener pOnMenuItemClickListener) {
+		this(null, pOnMenuItemClickListener);
+	}
+
+	public MenuScene(final Camera pCamera) {
+		this(pCamera, null);
+	}
+
+	public MenuScene(final Camera pCamera, final IOnMenuItemClickListener pOnMenuItemClickListener) {
+		super(1, pCamera);
+		this.mOnMenuItemClickListener = pOnMenuItemClickListener;
+		this.setOnAreaTouchListener(this);
+	}
+
+	// ===========================================================
+	// Getter & Setter
+	// ===========================================================
+
+	public IOnMenuItemClickListener getOnMenuItemClickListener() {
+		return this.mOnMenuItemClickListener;
+	}
+
+	public void setOnMenuItemClickListener(final IOnMenuItemClickListener pOnMenuItemClickListener) {
+		this.mOnMenuItemClickListener = pOnMenuItemClickListener;
+	}
+
+	public int getMenuItemCount() {
+		return this.mMenuItems.size();
+	}
+
+	public void addMenuItem(final MenuItem pMenuItem) {
+		this.mMenuItems.add(pMenuItem);
+		this.getBottomLayer().addEntity(pMenuItem);
+		this.registerTouchArea(pMenuItem);
+	}
+
+	@Override
+	public MenuScene getChildScene() {
+		return (MenuScene)super.getChildScene();
+	}
+
+	@Override
+	public void setChildScene(final Scene pChildScene, final boolean pModalDraw, final boolean pModalUpdate) {
+		if(pChildScene instanceof MenuScene) {
+			super.setChildScene(pChildScene, pModalDraw, pModalUpdate);
+		} else {
+			throw new IllegalArgumentException("MenuScene accepts only MenuScenes as a ChildScene.");
+		}
+	}
+
+	@Override
+	public void clearChildScene() {
+		if(this.getChildScene() != null) {
+			this.getChildScene().reset();
+			super.clearChildScene();
+		}
+	}
+
+	public void setMenuAnimator(final IMenuAnimator pMenuAnimator) {
+		this.mMenuAnimator = pMenuAnimator;
+	}
+
+	// ===========================================================
+	// Methods for/from SuperClass/Interfaces
+	// ===========================================================
+
+	@Override
+	public boolean onAreaTouched(final ITouchArea pTouchArea, final MotionEvent pSceneMotionEvent) {
+		if(this.mOnMenuItemClickListener != null) {
+			if(pSceneMotionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+				return this.mOnMenuItemClickListener.onMenuItemClicked(this, (MenuItem)pTouchArea);
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void back() {
+		super.back();
+
+		this.reset();
+	}
+
+	@Override
+	public void reset() {
+		super.reset();
+
+		final ArrayList<MenuItem> menuItems = this.mMenuItems;
+		for(int i = menuItems.size() - 1; i >= 0; i--) {
+			menuItems.get(i).reset();
+		}
+
+		this.prepareAnimations();
+	}
+
+	// ===========================================================
+	// Methods
+	// ===========================================================
+
+	public void buildAnimations() {
+		this.prepareAnimations();
+
+		final float cameraHeight = this.mCamera.getHeight();
+		final float cameraWidth = this.mCamera.getWidth();
+		this.mMenuAnimator.buildAnimations(this.mMenuItems, cameraWidth, cameraHeight);
+	}
+
+	public void prepareAnimations() {
+		final float cameraHeight = this.mCamera.getHeight();
+		final float cameraWidth = this.mCamera.getWidth();
+		this.mMenuAnimator.prepareAnimations(this.mMenuItems, cameraWidth, cameraHeight);
+	}
+
+	// ===========================================================
+	// Inner and Anonymous Classes
+	// ===========================================================
+}
