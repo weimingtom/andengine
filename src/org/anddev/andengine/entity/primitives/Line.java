@@ -37,15 +37,22 @@ public class Line extends Shape {
 
 	public Line(final float pX1, final float pY1, final float pX2, final float pY2, final float pLineWidth) {
 		super(pX1, pY1, new LineVertexBuffer(GL11.GL_STATIC_DRAW));
+		
 		this.mX2 = pX2;
 		this.mY2 = pY2;
-		this.mLineWidth = pLineWidth;
-		this.updateVertexBuffer();
 		
-		this.mScalePointX = this.getWidth() / 2f;
-		this.mScalePointY = this.getHeight() / 2f;
-		this.mRotatePointX = this.getWidth() / 2f;
-		this.mRotatePointY = this.getHeight() / 2f;
+		this.mLineWidth = pLineWidth;
+		
+		this.updateVertexBuffer();
+
+		final float width = this.getWidth();
+		final float height = this.getHeight();
+		
+		this.mRotationCenterX = width / 2f;
+		this.mRotationCenterY = height / 2f;
+			
+		this.mScaleCenterX = width / 2f;
+		this.mScaleCenterY = height / 2f;
 	}
 
 	// ===========================================================
@@ -162,13 +169,14 @@ public class Line extends Shape {
 	protected void applyRotation(final GL10 pGL) {
 		// TODO Offset needs to be taken into account.
 		final float rotation = this.mRotation;
+		
 		if(rotation != 0) {
-			final float rotateX = this.mRotatePointX;
-			final float rotateY = this.mRotatePointY;
+			final float rotationCenterX = this.getBaseWidth() * 0.5f;
+			final float rotationCenterY = this.getBaseHeight() * 0.5f;
 
-			pGL.glTranslatef(rotateX, rotateY, 0);
+			pGL.glTranslatef(rotationCenterX, rotationCenterY, 0);
 			pGL.glRotatef(rotation, 0, 0, 1);
-			pGL.glTranslatef(-rotateX, -rotateY, 0);
+			pGL.glTranslatef(-rotationCenterX, -rotationCenterY, 0);
 		}
 	}
 
@@ -176,13 +184,14 @@ public class Line extends Shape {
 	protected void applyScale(final GL10 pGL) {
 		final float scaleX = this.mScaleX;
 		final float scaleY = this.mScaleY;
+		
 		if(scaleX != 1 || scaleY != 1) {
-			final float scalePointX = this.mScalePointX;
-			final float scalePointY = this.mScalePointY;
+			final float scaleCenterX = this.getBaseWidth() * 0.5f;
+			final float scaleCenterY = this.getBaseHeight() * 0.5f;
 
-			pGL.glTranslatef(scalePointX, scalePointY, 0);
+			pGL.glTranslatef(scaleCenterX, scaleCenterY, 0);
 			pGL.glScalef(scaleX, scaleY, 1);
-			pGL.glTranslatef(-scalePointX, -scalePointY, 0);
+			pGL.glTranslatef(-scaleCenterX, -scaleCenterY, 0);
 		}
 	}
 

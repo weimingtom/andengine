@@ -19,19 +19,27 @@ public class ScaleModifier extends BaseDoubleValueSpanModifier {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	
-	public ScaleModifier(float pDuration, float pFromValueA, float pToValueA, float pFromValueB, float pToValueB) {
-		super(pDuration, pFromValueA, pToValueA, pFromValueB, pToValueB);
+
+	public ScaleModifier(final float pDuration, final float pFromScale, final float pToScale) {
+		this(pDuration, pFromScale, pToScale, null);
 	}
 
-	public ScaleModifier(float pDuration, float pFromValueA, float pToValueA, float pFromValueB, float pToValueB, IModifierListener pModiferListener) {
-		super(pDuration, pFromValueA, pToValueA, pFromValueB, pToValueB, pModiferListener);
+	public ScaleModifier(final float pDuration, final float pFromScale, final float pToScale, final IModifierListener pModiferListener) {
+		this(pDuration, pFromScale, pToScale, pFromScale, pToScale, pModiferListener);
+	}
+
+	public ScaleModifier(final float pDuration, final float pFromScaleX, final float pToScaleX, final float pFromScaleY, final float pToScaleY) {
+		this(pDuration, pFromScaleX, pToScaleX, pFromScaleY, pToScaleY, null);
+	}
+
+	public ScaleModifier(final float pDuration, final float pFromScaleX, final float pToScaleX, final float pFromScaleY, final float pToScaleY, final IModifierListener pModiferListener) {
+		super(pDuration, pFromScaleX, pToScaleX, pFromScaleY, pToScaleY, pModiferListener);
 	}
 
 	public ScaleModifier(final ScaleModifier pScaleModifier) {
 		super(pScaleModifier);
 	}
-	
+
 	@Override
 	public ScaleModifier clone(){
 		return new ScaleModifier(this);
@@ -45,14 +53,14 @@ public class ScaleModifier extends BaseDoubleValueSpanModifier {
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
 
-	protected void onSetInitialValues(final Shape pShape, float pScaleX, float pScaleY) {
-		pShape.setScaleX(pScaleX);
-		pShape.setScaleY(pScaleY);
+	@Override
+	protected void onSetInitialValues(final Shape pShape, final float pScaleA, final float pScaleB) {
+		pShape.setScale(pScaleA, pScaleB);
 	}
 
-	protected void onSetValues(final Shape pShape, float pScaleX, float pScaleY) {
-		pShape.setScaleX(pScaleX);
-		pShape.setScaleY(pScaleY);
+	@Override
+	protected void onSetValues(final Shape pShape, final float pScaleA, final float pScaleB) {
+		pShape.setScale(pScaleA, pScaleB);
 	}
 
 	// ===========================================================

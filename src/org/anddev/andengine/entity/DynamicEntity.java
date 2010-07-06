@@ -23,12 +23,13 @@ public abstract class DynamicEntity extends StaticEntity {
 
 	protected float mScaleX = 1;
 	protected float mScaleY = 1;
-	
-	protected float mScalePointX = 0;
-	protected float mScalePointY = 0;
-	
-	protected float mRotatePointX = 0;
-	protected float mRotatePointY = 0;
+
+	protected float mScaleCenterX = 0;
+	protected float mScaleCenterY = 0;
+
+	protected float mRotationCenterX = 0;
+	protected float mRotationCenterY = 0;
+
 	private boolean mUpdatePhysicsSelf = true;
 
 	// ===========================================================
@@ -42,68 +43,7 @@ public abstract class DynamicEntity extends StaticEntity {
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
-
-	public float getVelocityX() {
-		return this.mVelocityX;
-	}
-
-	public float getVelocityY() {
-		return this.mVelocityY;
-	}
-
-	public void setVelocity(final float pVelocityX, final float pVelocityY) {
-		this.mVelocityX = pVelocityX;
-		this.mVelocityY = pVelocityY;
-	}
-
-	public float getScaleX() {
-		return this.mScaleX;
-	}
 	
-	public float getScaleY() {
-		return this.mScaleY;
-	}
-
-	public void setScaleX(final float pScaleX) {
-		this.mScaleX = pScaleX;
-	}
-	
-	public void setScaleY(final float pScaleY) {
-		this.mScaleY = pScaleY;
-	}
-	
-	public float getScalePointX() {
-		return this.mScalePointX;
-	}
-	
-	public float getScalePointY() {
-		return this.mScalePointY;
-	}
-
-	public void setScalePointX(final float pScalePointX) {
-		this.mScalePointX = pScalePointX;
-	}
-	
-	public void setScalePointY(final float pScalePointY) {
-		this.mScalePointY = pScalePointY;
-	}
-	
-	public float getRotatePointX() {
-		return this.mRotatePointX;
-	}
-	
-	public float getRotatePointY() {
-		return this.mRotatePointY;
-	}
-
-	public void setRotatePointX(final float pRotatePointX) {
-		this.mRotatePointX = pRotatePointX;
-	}
-	
-	public void setRotatePointY(final float pRotatePointY) {
-		this.mRotatePointY = pRotatePointY;
-	}
-
 	public void setPosition(final StaticEntity pOtherStaticEntity) {
 		this.setPosition(pOtherStaticEntity.getX(), pOtherStaticEntity.getY());
 	}
@@ -118,6 +58,71 @@ public abstract class DynamicEntity extends StaticEntity {
 		this.mX = this.mBaseX;
 		this.mY = this.mBaseY;
 		this.onPositionChanged();
+	}
+
+	public float getVelocityX() {
+		return this.mVelocityX;
+	}
+
+	public float getVelocityY() {
+		return this.mVelocityY;
+	}
+
+	public void setVelocity(final float pVelocity) {
+		this.mVelocityX = pVelocity;
+		this.mVelocityY = pVelocity;
+	}
+
+	public void setVelocity(final float pVelocityX, final float pVelocityY) {
+		this.mVelocityX = pVelocityX;
+		this.mVelocityY = pVelocityY;
+	}
+
+	public float getScaleX() {
+		return this.mScaleX;
+	}
+
+	public float getScaleY() {
+		return this.mScaleY;
+	}
+
+	public void setScaleX(final float pScaleX) {
+		this.mScaleX = pScaleX;
+	}
+
+	public void setScaleY(final float pScaleY) {
+		this.mScaleY = pScaleY;
+	}
+
+	public void setScale(final float pScale) {
+		this.mScaleX = pScale;
+		this.mScaleY = pScale;
+	}
+
+	public void setScale(final float pScaleX, final float pScaleY) {
+		this.mScaleX = pScaleX;
+		this.mScaleY = pScaleY;
+	}
+	
+	public float getScaleCenterX() {
+		return this.mScaleCenterX;
+	}
+
+	public float getScaleCenterY() {
+		return this.mScaleCenterY;
+	}
+
+	public void setScaleCenterX(final float pScaleCenterX) {
+		this.mScaleCenterX = pScaleCenterX;
+	}
+
+	public void setScaleCenterY(final float pScaleCenterY) {
+		this.mScaleCenterY = pScaleCenterY;
+	}
+	
+	public void setScaleCenter(final float pScaleCenterX, final float pScaleCenterY) {
+		this.mScaleCenterX = pScaleCenterX;
+		this.mScaleCenterY = pScaleCenterY;
 	}
 
 	public float getAccelerationX() {
@@ -141,6 +146,27 @@ public abstract class DynamicEntity extends StaticEntity {
 		this.mRotation = pRotation;
 	}
 
+	public float getRotationCenterX() {
+		return this.mRotationCenterX;
+	}
+
+	public float getRotationCenterY() {
+		return this.mRotationCenterY;
+	}
+
+	public void setRotationCenterX(final float pRotationCenterX) {
+		this.mRotationCenterX = pRotationCenterX;
+	}
+
+	public void setRotationCenterY(final float pRotationCenterY) {
+		this.mRotationCenterY = pRotationCenterY;
+	}
+	
+	public void setRotationCenter(final float pRotationCenterX, final float pRotationCenterY) {
+		this.mRotationCenterX = pRotationCenterX;
+		this.mRotationCenterY = pRotationCenterY;
+	}
+
 	public boolean isUpdatePhysicsSelf() {
 		return this.mUpdatePhysicsSelf;
 	}
@@ -150,7 +176,7 @@ public abstract class DynamicEntity extends StaticEntity {
 	}
 
 	// ===========================================================
-	// Methods for/from SuperClass/Interfaces
+		// Methods for/from SuperClass/Interfaces
 	// ===========================================================
 
 	@Override

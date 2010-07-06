@@ -1,17 +1,16 @@
-package org.anddev.andengine.opengl.vertex;
+package org.anddev.andengine.engine.camera;
 
-import java.nio.FloatBuffer;
+import android.app.Activity;
+import android.util.DisplayMetrics;
 
 /**
  * @author Nicolas Gramlich
- * @since 13:07:25 - 13.03.2010
+ * @since 13:50:42 - 03.07.2010
  */
-public class RectangleVertexBuffer extends VertexBuffer {
+public class CameraFactory {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-
-	private static final int VERTICES_PER_RECTANGLE = 4;
 
 	// ===========================================================
 	// Fields
@@ -20,10 +19,6 @@ public class RectangleVertexBuffer extends VertexBuffer {
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-
-	public RectangleVertexBuffer(final int pDrawType) {
-		super(2 * VERTICES_PER_RECTANGLE * BYTES_PER_FLOAT, pDrawType);
-	}
 
 	// ===========================================================
 	// Getter & Setter
@@ -37,30 +32,18 @@ public class RectangleVertexBuffer extends VertexBuffer {
 	// Methods
 	// ===========================================================
 
-	public void onUpdate(final float pX, final float pY, final float pWidth, final float pHeight) {
-		// TODO First parameters are always Zero...
-		final float x2 = pX + pWidth;
-		final float y2 = pY + pHeight;
-		
-		final FloatBuffer buffer = this.getFloatBuffer();
-		buffer.position(0);
+	public static Camera createPixelPerfectCamera(final Activity pActivity, final float pCenterX, final float pCenterY) {
+		final DisplayMetrics displayMetrics = getDisplayMetrics(pActivity);
 
-		// TODO Maybe use put(float []) instead of put(float) ...
-		buffer.put(pX);
-		buffer.put(pY);
+		final float width = displayMetrics.widthPixels;
+		final float height = displayMetrics.widthPixels;
+		return new Camera(pCenterX - width * 0.5f, pCenterY - height * 0.5f, width, height);
+	}
 
-		buffer.put(pX);
-		buffer.put(y2);
-
-		buffer.put(x2);
-		buffer.put(pY);
-
-		buffer.put(x2);
-		buffer.put(y2);
-
-		buffer.position(0);
-
-		super.update();
+	private static DisplayMetrics getDisplayMetrics(final Activity pActivity) {
+		final DisplayMetrics displayMetrics = new DisplayMetrics();
+		pActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+		return displayMetrics;
 	}
 
 	// ===========================================================
