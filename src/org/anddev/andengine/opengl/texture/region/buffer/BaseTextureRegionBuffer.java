@@ -5,6 +5,7 @@ import java.nio.FloatBuffer;
 import org.anddev.andengine.opengl.buffer.BufferObject;
 import org.anddev.andengine.opengl.texture.Texture;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
+import org.anddev.andengine.opengl.vertex.RectangleVertexBuffer;
 
 /**
  * @author Nicolas Gramlich
@@ -28,7 +29,7 @@ abstract class BaseTextureRegionBuffer extends BufferObject {
 	// ===========================================================
 
 	public BaseTextureRegionBuffer(final TextureRegion pTextureRegion, final int pDrawType) {
-		super(8 * BYTES_PER_FLOAT, pDrawType);
+		super(2 * RectangleVertexBuffer.VERTICES_PER_RECTANGLE * BYTES_PER_FLOAT, pDrawType);
 		this.mTextureRegion = pTextureRegion;
 	}
 
@@ -125,6 +126,10 @@ abstract class BaseTextureRegionBuffer extends BufferObject {
 				buffer.put(x1); buffer.put(y2);
 
 				buffer.put(x2); buffer.put(y1);
+
+				buffer.put(x2); buffer.put(y1);
+
+				buffer.put(x1); buffer.put(y2);
 
 				buffer.put(x2); buffer.put(y2);
 			}

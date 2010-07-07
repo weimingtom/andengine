@@ -5,6 +5,7 @@ import javax.microedition.khronos.opengles.GL10;
 import org.anddev.andengine.collision.CollisionChecker;
 import org.anddev.andengine.entity.shape.IShape;
 import org.anddev.andengine.entity.shape.Shape;
+import org.anddev.andengine.opengl.vertex.RectangleVertexBuffer;
 import org.anddev.andengine.opengl.vertex.VertexBuffer;
 
 /**
@@ -122,7 +123,7 @@ public abstract class RectangularShape extends Shape {
 
 	@Override
 	protected void drawVertices(final GL10 pGL) {
-		pGL.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		pGL.glDrawArrays(GL10.GL_TRIANGLES, 0, RectangleVertexBuffer.VERTICES_PER_RECTANGLE);
 	}
 
 	@Override
