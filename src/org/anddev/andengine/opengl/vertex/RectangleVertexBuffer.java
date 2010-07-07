@@ -11,7 +11,7 @@ public class RectangleVertexBuffer extends VertexBuffer {
 	// Constants
 	// ===========================================================
 
-	private static final int VERTICES_PER_RECTANGLE = 4;
+	public static final int VERTICES_PER_RECTANGLE = 6;
 
 	// ===========================================================
 	// Fields
@@ -54,6 +54,12 @@ public class RectangleVertexBuffer extends VertexBuffer {
 
 		buffer.put(x2);
 		buffer.put(pY);
+
+		buffer.put(x2);
+		buffer.put(pY);
+
+		buffer.put(pX);
+		buffer.put(y2);
 
 		buffer.put(x2);
 		buffer.put(y2);
