@@ -86,10 +86,14 @@ abstract class BaseTextureRegionBuffer extends BufferObject {
 			return;
 		}
 
-		final float x1 = this.getX1();
-		final float y1 = this.getY1();
-		final float x2 = this.getX2();
-		final float y2 = this.getY2();
+//		final float x1 = this.getX1();
+//		final float y1 = this.getY1();
+//		final float x2 = this.getX2();
+//		final float y2 = this.getY2();
+		final float x1 = this.getX1() + 1f / texture.getWidth();
+		final float y1 = this.getY1() + 1f / texture.getWidth();
+		final float x2 = this.getX2() - 1f / texture.getHeight();
+		final float y2 = this.getY2() - 1f / texture.getHeight();
 
 		final FloatBuffer buffer = this.getFloatBuffer();
 		buffer.position(0);
