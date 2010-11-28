@@ -8,6 +8,7 @@ import org.anddev.andengine.opengl.util.GLHelper;
 import org.anddev.andengine.opengl.vertex.RectangleVertexBuffer;
 
 /**
+ * TODO This class will be gone more or less, when the RenderHandler mechanism exists.
  * @author Nicolas Gramlich
  * @since 11:38:53 - 08.03.2010
  */
