@@ -39,8 +39,8 @@ public class Rectangle extends BaseRectangle {
 	// ===========================================================
 
 	@Override
-	protected void onInitDraw(final GL10 pGL) {
-		super.onInitDraw(pGL);
+	protected void onInitRender(final GL10 pGL) {
+		super.onInitRender(pGL);
 		GLHelper.disableTextures(pGL);
 		GLHelper.disableTexCoordArray(pGL);
 	}

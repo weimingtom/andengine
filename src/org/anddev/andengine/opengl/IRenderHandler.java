@@ -1,14 +1,15 @@
-package org.anddev.andengine.entity;
+package org.anddev.andengine.opengl;
 
-import org.anddev.andengine.engine.handler.IUpdateHandler;
-import org.anddev.andengine.opengl.IRenderable;
+import javax.microedition.khronos.opengles.GL10;
 
+import org.anddev.andengine.engine.camera.Camera;
+import org.anddev.andengine.entity.shape.Shape;
 
 /**
  * @author Nicolas Gramlich
- * @since 11:20:25 - 08.03.2010
+ * @since 13:40:51 - 28.11.2010
  */
-public interface IEntity extends IRenderable, IUpdateHandler {
+public interface IRenderHandler {
 	// ===========================================================
 	// Final Fields
 	// ===========================================================
@@ -16,7 +17,6 @@ public interface IEntity extends IRenderable, IUpdateHandler {
 	// ===========================================================
 	// Methods
 	// ===========================================================
-
-	public int getZIndex();
-	public void setZIndex(final int pZIndex);
+	
+	public void onRender(final Shape pShape, final GL10 pGL, final Camera pCamera);
 }

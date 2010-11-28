@@ -42,7 +42,7 @@ public class Scene extends Entity {
 
 	protected Scene mParentScene;
 	protected Scene mChildScene;
-	private boolean mChildSceneModalDraw;
+	private boolean mChildSceneModalRender;
 	private boolean mChildSceneModalUpdate;
 	private boolean mChildSceneModalTouch;
 
@@ -226,10 +226,10 @@ public class Scene extends Entity {
 		this.setChildScene(pChildScene, false, false, false);
 	}
 
-	public void setChildScene(final Scene pChildScene, final boolean pModalDraw, final boolean pModalUpdate, final boolean pModalTouch) {
+	public void setChildScene(final Scene pChildScene, final boolean pModalRender, final boolean pModalUpdate, final boolean pModalTouch) {
 		pChildScene.setParentScene(this);
 		this.mChildScene = pChildScene;
-		this.mChildSceneModalDraw = pModalDraw;
+		this.mChildSceneModalRender = pModalRender;
 		this.mChildSceneModalUpdate = pModalUpdate;
 		this.mChildSceneModalTouch = pModalTouch;
 	}
@@ -273,23 +273,23 @@ public class Scene extends Entity {
 	// ===========================================================
 
 	@Override
-	protected void onManagedDraw(final GL10 pGL, final Camera pCamera) {
+	protected void onManagedRender(final GL10 pGL, final Camera pCamera) {
 		final Scene childScene = this.mChildScene;
-		if(childScene == null || !this.mChildSceneModalDraw) {
+		if(childScene == null || !this.mChildSceneModalRender) {
 			if(this.mBackgroundEnabled) {
 				pCamera.onApplyPositionIndependentMatrix(pGL);
 				GLHelper.setModelViewIdentityMatrix(pGL);
 
-				this.mBackground.onDraw(pGL, pCamera);
+				this.mBackground.onRender(pGL, pCamera);
 			}
 
 			pCamera.onApplyMatrix(pGL);
 			GLHelper.setModelViewIdentityMatrix(pGL);
 
-			this.drawLayers(pGL, pCamera);
+			this.renderLayers(pGL, pCamera);
 		}
 		if(childScene != null) {
-			childScene.onDraw(pGL, pCamera);
+			childScene.onRender(pGL, pCamera);
 		}
 	}
 
@@ -520,11 +520,11 @@ public class Scene extends Entity {
 		}
 	}
 
-	private void drawLayers(final GL10 pGL, final Camera pCamera) {
+	private void renderLayers(final GL10 pGL, final Camera pCamera) {
 		final ILayer[] layers = this.mLayers;
 		final int layerCount = this.mLayerCount;
 		for(int i = 0; i < layerCount; i++) {
-			layers[i].onDraw(pGL, pCamera);
+			layers[i].onRender(pGL, pCamera);
 		}
 	}
 

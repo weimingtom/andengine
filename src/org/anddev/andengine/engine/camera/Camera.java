@@ -186,9 +186,9 @@ public class Camera implements IUpdateHandler {
 	// Methods
 	// ===========================================================
 
-	public void onDrawHUD(final GL10 pGL) {
+	public void onRenderHUD(final GL10 pGL) {
 		if(this.mHUD != null) {
-			this.mHUD.onDraw(pGL, this);
+			this.mHUD.onRender(pGL, this);
 		}
 	}
 

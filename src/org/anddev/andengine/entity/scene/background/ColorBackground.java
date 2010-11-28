@@ -109,7 +109,7 @@ public class ColorBackground extends BaseBackground {
 	// ===========================================================
 
 	@Override
-	public void onDraw(final GL10 pGL, final Camera pCamera) {
+	public void onRender(final GL10 pGL, final Camera pCamera) {
 		if(this.mColorEnabled) {
 			pGL.glClearColor(this.mRed, this.mGreen, this.mBlue, this.mAlpha);
 			pGL.glClear(GL10.GL_COLOR_BUFFER_BIT);

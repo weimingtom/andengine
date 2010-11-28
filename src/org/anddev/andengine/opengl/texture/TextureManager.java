@@ -48,7 +48,7 @@ public class TextureManager {
 	}
 
 	/**
-	 * @param pTexture the {@link Texture} to be loaded before the very next frame is drawn (Or prevent it from being unloaded then).
+	 * @param pTexture the {@link Texture} to be loaded before the very next frame is rendered (Or prevent it from being unloaded then).
 	 * @return <code>true</code> when the {@link Texture} was previously not managed by this {@link TextureManager}, <code>false</code> if it was already managed.
 	 */
 	public boolean loadTexture(final Texture pTexture) {
@@ -64,7 +64,7 @@ public class TextureManager {
 	}
 
 	/**
-	 * @param pTexture the {@link Texture} to be unloaded before the very next frame is drawn (Or prevent it from being loaded then).
+	 * @param pTexture the {@link Texture} to be unloaded before the very next frame is rendered (Or prevent it from being loaded then).
 	 * @return <code>true</code> when the {@link Texture} was already managed by this {@link TextureManager}, <code>false</code> if it was not managed.
 	 */
 	public boolean unloadTexture(final Texture pTexture) {

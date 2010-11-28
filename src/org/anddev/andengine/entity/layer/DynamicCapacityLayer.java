@@ -58,11 +58,11 @@ public class DynamicCapacityLayer extends BaseLayer {
 	}
 
 	@Override
-	protected void onManagedDraw(final GL10 pGL, final Camera pCamera) {
+	protected void onManagedRender(final GL10 pGL, final Camera pCamera) {
 		final ArrayList<IEntity> entities = this.mEntities;
 		final int entityCount = entities.size();
 		for(int i = 0; i < entityCount; i++) {
-			entities.get(i).onDraw(pGL, pCamera);
+			entities.get(i).onRender(pGL, pCamera);
 		}
 	}
 

@@ -9,7 +9,7 @@ import org.anddev.andengine.engine.camera.Camera;
  * @author Nicolas Gramlich
  * @since 10:50:58 - 08.08.2010
  */
-public interface IDrawable {
+public interface IRenderable {
 	// ===========================================================
 	// Final Fields
 	// ===========================================================
@@ -18,5 +18,5 @@ public interface IDrawable {
 	// Methods
 	// ===========================================================
 
-	public void onDraw(final GL10 pGL, final Camera pCamera);
+	public void onRender(final GL10 pGL, final Camera pCamera);
 }

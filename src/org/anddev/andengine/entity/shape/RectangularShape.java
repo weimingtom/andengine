@@ -124,7 +124,7 @@ public abstract class RectangularShape extends GLShape {
 	}
 
 	@Override
-	protected void drawVertices(final GL10 pGL, final Camera pCamera) {
+	protected void renderVertices(final GL10 pGL, final Camera pCamera) {
 		pGL.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 	}
 
