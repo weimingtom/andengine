@@ -26,7 +26,7 @@ public class CameraScene extends Scene {
 	// ===========================================================
 
 	/**
-	 * {@link CameraScene#setCamera(Camera)} needs to be called manually. Otherwise nothing will be drawn.
+	 * {@link CameraScene#setCamera(Camera)} needs to be called manually. Otherwise nothing will be rendered.
 	 */
 	public CameraScene(final int pLayerCount) {
 		this(pLayerCount, null);
@@ -85,7 +85,7 @@ public class CameraScene extends Scene {
 	}
 
 	@Override
-	protected void onManagedDraw(final GL10 pGL, final Camera pCamera) {
+	protected void onManagedRender(final GL10 pGL, final Camera pCamera) {
 		if(this.mCamera != null) {
 			pGL.glMatrixMode(GL10.GL_PROJECTION);
 			this.mCamera.onApplyCameraSceneMatrix(pGL);
@@ -94,7 +94,7 @@ public class CameraScene extends Scene {
 				pGL.glPushMatrix();
 				pGL.glLoadIdentity();
 
-				super.onManagedDraw(pGL, pCamera);
+				super.onManagedRender(pGL, pCamera);
 
 				pGL.glPopMatrix();
 			}

@@ -42,9 +42,9 @@ public class EntityBackground extends ColorBackground {
 	// ===========================================================
 
 	@Override
-	public void onDraw(final GL10 pGL, final Camera pCamera) {
-		super.onDraw(pGL, pCamera);
-		this.mEntity.onDraw(pGL, pCamera);
+	public void onRender(final GL10 pGL, final Camera pCamera) {
+		super.onRender(pGL, pCamera);
+		this.mEntity.onRender(pGL, pCamera);
 	}
 
 	// ===========================================================

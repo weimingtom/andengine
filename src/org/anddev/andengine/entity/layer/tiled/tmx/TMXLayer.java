@@ -156,8 +156,8 @@ public class TMXLayer extends RectangularShape implements TMXConstants {
 	}
 
 	@Override
-	protected void onInitDraw(final GL10 pGL) {
-		super.onInitDraw(pGL);
+	protected void onInitRender(final GL10 pGL) {
+		super.onInitRender(pGL);
 
 		GLHelper.enableTextures(pGL);
 		GLHelper.enableTexCoordArray(pGL);
@@ -176,7 +176,7 @@ public class TMXLayer extends RectangularShape implements TMXConstants {
 	}
 
 	@Override
-	protected void drawVertices(final GL10 pGL, final Camera pCamera) {
+	protected void renderVertices(final GL10 pGL, final Camera pCamera) {
 		final TMXTile[][] tmxTiles = this.mTMXTiles;
 
 		final int tileColumns = this.mTileColumns;

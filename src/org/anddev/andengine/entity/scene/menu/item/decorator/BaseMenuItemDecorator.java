@@ -391,8 +391,8 @@ public abstract class BaseMenuItemDecorator implements IMenuItem {
 	}
 
 	@Override
-	public void onDraw(final GL10 pGL, final Camera pCamera) {
-		this.mMenuItem.onDraw(pGL, pCamera);
+	public void onRender(final GL10 pGL, final Camera pCamera) {
+		this.mMenuItem.onRender(pGL, pCamera);
 	}
 
 	@Override

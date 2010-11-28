@@ -50,11 +50,11 @@ public class FixedCapacityLayer extends BaseLayer {
 	}
 
 	@Override
-	protected void onManagedDraw(final GL10 pGL, final Camera pCamera) {
+	protected void onManagedRender(final GL10 pGL, final Camera pCamera) {
 		final IEntity[] entities = this.mEntities;
 		final int entityCount = this.mEntityCount;
 		for(int i = 0; i < entityCount; i++) {
-			entities[i].onDraw(pGL, pCamera);
+			entities[i].onRender(pGL, pCamera);
 		}
 	}
 

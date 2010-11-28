@@ -124,14 +124,14 @@ public class Text extends RectangularShape {
 	// ===========================================================
 
 	@Override
-	protected void onInitDraw(final GL10 pGL) {
-		super.onInitDraw(pGL);
+	protected void onInitRender(final GL10 pGL) {
+		super.onInitRender(pGL);
 		GLHelper.enableTextures(pGL);
 		GLHelper.enableTexCoordArray(pGL);
 	}
 
 	@Override
-	protected void drawVertices(final GL10 pGL, final Camera pCamera) {
+	protected void renderVertices(final GL10 pGL, final Camera pCamera) {
 		pGL.glDrawArrays(GL10.GL_TRIANGLES, 0, this.mVertexCount);
 	}
 

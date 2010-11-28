@@ -463,17 +463,17 @@ public class Engine implements SensorEventListener, OnTouchListener, ITouchEvent
 
 			this.onUpdate(secondsElapsed);
 
-			this.yieldDraw();
+			this.yieldRender();
 		} else {
-			this.yieldDraw();
+			this.yieldRender();
 
 			Thread.sleep(16);
 		}
 	}
 
-	private void yieldDraw() throws InterruptedException {
+	private void yieldRender() throws InterruptedException {
 		final State threadLocker = this.mThreadLocker;
-		threadLocker.notifyCanDraw();
+		threadLocker.notifyCanRender();
 		threadLocker.waitUntilCanUpdate();
 	}
 
@@ -500,10 +500,10 @@ public class Engine implements SensorEventListener, OnTouchListener, ITouchEvent
 		this.getCamera().onUpdate(pSecondsElapsed);
 	}
 
-	public void onDrawFrame(final GL10 pGL) throws InterruptedException {
+	public void onRenderFrame(final GL10 pGL) throws InterruptedException {
 		final State threadLocker = this.mThreadLocker;
 
-		threadLocker.waitUntilCanDraw();
+		threadLocker.waitUntilCanRender();
 
 		this.mTextureManager.updateTextures(pGL);
 		this.mFontManager.updateFonts(pGL);
@@ -511,17 +511,17 @@ public class Engine implements SensorEventListener, OnTouchListener, ITouchEvent
 			this.mBufferObjectManager.updateBufferObjects((GL11) pGL);
 		}
 
-		this.onDrawScene(pGL);
+		this.onRenderScene(pGL);
 
 		threadLocker.notifyCanUpdate();
 	}
 
-	protected void onDrawScene(final GL10 pGL) {
+	protected void onRenderScene(final GL10 pGL) {
 		final Camera camera = this.getCamera();
 
-		this.mScene.onDraw(pGL, camera);
+		this.mScene.onRender(pGL, camera);
 
-		camera.onDrawHUD(pGL);
+		camera.onRenderHUD(pGL);
 	}
 
 	private long getNanosecondsElapsed() {
@@ -689,33 +689,33 @@ public class Engine implements SensorEventListener, OnTouchListener, ITouchEvent
 	}
 
 	private static class State {
-		boolean mDrawing = false;
+		boolean mRendering = false;
 
-		public synchronized void notifyCanDraw() {
-			// Debug.d(">>> notifyCanDraw");
-			this.mDrawing = true;
+		public synchronized void notifyCanRender() {
+			// Debug.d(">>> notifyCanRender");
+			this.mRendering = true;
 			this.notifyAll();
-			// Debug.d("<<< notifyCanDraw");
+			// Debug.d("<<< notifyCanRender");
 		}
 
 		public synchronized void notifyCanUpdate() {
 			// Debug.d(">>> notifyCanUpdate");
-			this.mDrawing = false;
+			this.mRendering = false;
 			this.notifyAll();
 			// Debug.d("<<< notifyCanUpdate");
 		}
 
-		public synchronized void waitUntilCanDraw() throws InterruptedException {
-			// Debug.d(">>> waitUntilCanDraw");
-			while(this.mDrawing == false) {
+		public synchronized void waitUntilCanRender() throws InterruptedException {
+			// Debug.d(">>> waitUntilCanRender");
+			while(this.mRendering == false) {
 				this.wait();
 			}
-			// Debug.d("<<< waitUntilCanDraw");
+			// Debug.d("<<< waitUntilCanRender");
 		}
 
 		public synchronized void waitUntilCanUpdate() throws InterruptedException {
 			// Debug.d(">>> waitUntilCanUpdate");
-			while(this.mDrawing == true) {
+			while(this.mRendering == true) {
 				this.wait();
 			}
 			// Debug.d("<<< waitUntilCanUpdate");

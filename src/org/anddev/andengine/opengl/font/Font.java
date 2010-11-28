@@ -42,7 +42,7 @@ public class Font {
 	private int mCurrentTextureY = 0;
 
 	private final SparseArray<Letter> mManagedCharacterToLetterMap = new SparseArray<Letter>();
-	private final ArrayList<Letter> mLettersPendingToBeDrawnToTexture = new ArrayList<Letter>();
+	private final ArrayList<Letter> mLettersPendingToBeRenderedToTexture = new ArrayList<Letter>();
 
 	protected final Paint mPaint;
 	private final Paint mBackgroundPaint;
@@ -108,12 +108,12 @@ public class Font {
 	// ===========================================================
 
 	public synchronized void reload() {
-		final ArrayList<Letter> lettersPendingToBeDrawnToTexture = this.mLettersPendingToBeDrawnToTexture;
+		final ArrayList<Letter> lettersPendingToBeRenderedToTexture = this.mLettersPendingToBeRenderedToTexture;
 		final SparseArray<Letter> managedCharacterToLetterMap = this.mManagedCharacterToLetterMap;
 
-		/* Make all letters redraw to the texture. */
+		/* Make all letters rerender to the texture. */
 		for(int i = managedCharacterToLetterMap.size() - 1; i >= 0; i--) {
-			lettersPendingToBeDrawnToTexture.add(managedCharacterToLetterMap.valueAt(i));
+			lettersPendingToBeRenderedToTexture.add(managedCharacterToLetterMap.valueAt(i));
 		}
 	}
 
@@ -134,13 +134,13 @@ public class Font {
 		/* Make background transparent. */
 		this.mCanvas.drawRect(0, 0, getLetterBitmapTemporaryRect.width() + LETTER_EXTRA_WIDTH, lineHeight, this.mBackgroundPaint);
 
-		/* Actually draw the character. */
-		this.drawCharacterString(characterAsString);
+		/* Actually render the character. */
+		this.renderCharacterString(characterAsString);
 
 		return bitmap;
 	}
 
-	protected void drawCharacterString(final String pCharacterAsString) {
+	protected void renderCharacterString(final String pCharacterAsString) {
 		this.mCanvas.drawText(pCharacterAsString, LETTER_LEFT_OFFSET, -this.mFontMetrics.ascent, this.mPaint);
 	}
 
@@ -160,7 +160,7 @@ public class Font {
 		if (letter == null) {
 			letter = this.createLetter(pCharacter);
 
-			this.mLettersPendingToBeDrawnToTexture.add(letter);
+			this.mLettersPendingToBeRenderedToTexture.add(letter);
 			managedCharacterToLetterMap.put(pCharacter, letter);
 		}
 		return letter;
@@ -193,15 +193,15 @@ public class Font {
 	}
 
 	public synchronized void update(final GL10 pGL) {
-		final ArrayList<Letter> lettersPendingToBeDrawnToTexture = this.mLettersPendingToBeDrawnToTexture;
-		if(lettersPendingToBeDrawnToTexture.size() > 0) {
+		final ArrayList<Letter> lettersPendingToBeRenderedToTexture = this.mLettersPendingToBeRenderedToTexture;
+		if(lettersPendingToBeRenderedToTexture.size() > 0) {
 			final int hardwareTextureID = this.mTexture.getHardwareTextureID();
 
 			final float textureWidth = this.mTextureWidth;
 			final float textureHeight = this.mTextureHeight;
 
-			for(int i = lettersPendingToBeDrawnToTexture.size() - 1; i >= 0; i--) {
-				final Letter letter = lettersPendingToBeDrawnToTexture.get(i);
+			for(int i = lettersPendingToBeRenderedToTexture.size() - 1; i >= 0; i--) {
+				final Letter letter = lettersPendingToBeRenderedToTexture.get(i);
 				final Bitmap bitmap = this.getLetterBitmap(letter.mCharacter);
 
 				GLHelper.bindTexture(pGL, hardwareTextureID);
@@ -209,7 +209,7 @@ public class Font {
 
 				bitmap.recycle();
 			}
-			lettersPendingToBeDrawnToTexture.clear();
+			lettersPendingToBeRenderedToTexture.clear();
 			System.gc();
 		}
 	}

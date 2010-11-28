@@ -430,7 +430,7 @@ public abstract class Shape extends Entity implements IShape {
 	}
 
 	protected abstract void onApplyVertices(final GL10 pGL);
-	protected abstract void drawVertices(final GL10 pGL, final Camera pCamera);
+	protected abstract void renderVertices(final GL10 pGL, final Camera pCamera);
 
 	@Override
 	protected void onManagedUpdate(final float pSecondsElapsed) {
@@ -463,21 +463,21 @@ public abstract class Shape extends Entity implements IShape {
 	}
 
 	@Override
-	protected void onManagedDraw(final GL10 pGL, final Camera pCamera) {
+	protected void onManagedRender(final GL10 pGL, final Camera pCamera) {
 		if(this.mCullingEnabled == false || this.isCulled(pCamera) == false) {
-			this.onInitDraw(pGL);
+			this.onInitRender(pGL);
 
 			pGL.glPushMatrix();
 			{
 				this.onApplyVertices(pGL);
 				this.onApplyTransformations(pGL);
-				this.drawVertices(pGL, pCamera);
+				this.renderVertices(pGL, pCamera);
 			}
 			pGL.glPopMatrix();
 		}
 	}
 
-	protected void onInitDraw(final GL10 pGL) {
+	protected void onInitRender(final GL10 pGL) {
 		GLHelper.setColor(pGL, this.mRed, this.mGreen, this.mBlue, this.mAlpha);
 
 		GLHelper.enableVertexArray(pGL);

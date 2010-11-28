@@ -117,7 +117,7 @@ public class BuildableTexture extends Texture {
 	}
 	
 	/**
-	 * May draw over already added {@link ITextureSource}s.
+	 * May render over already added {@link ITextureSource}s.
 	 * 
 	 * @param pTextureSourcePackingAlgorithm the {@link ITextureBuilder} to use for packing the {@link ITextureSource} in this {@link BuildableTexture}.
 	 * @throws TextureSourcePackingException i.e. when the {@link ITextureSource}s didn't fit into this {@link BuildableTexture}.

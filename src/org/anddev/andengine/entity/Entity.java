@@ -68,12 +68,12 @@ public abstract class Entity implements IEntity {
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
 
-	protected abstract void onManagedDraw(final GL10 pGL, final Camera pCamera);
+	protected abstract void onManagedRender(final GL10 pGL, final Camera pCamera);
 
 	@Override
-	public final void onDraw(final GL10 pGL, final Camera pCamera) {
+	public final void onRender(final GL10 pGL, final Camera pCamera) {
 		if(this.mVisible) {
-			this.onManagedDraw(pGL, pCamera);
+			this.onManagedRender(pGL, pCamera);
 		}
 	}
 

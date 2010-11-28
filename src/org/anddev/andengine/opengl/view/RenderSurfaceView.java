@@ -145,7 +145,7 @@ public class RenderSurfaceView extends GLSurfaceView {
 		@Override
 		public void onDrawFrame(final GL10 pGL) {
 			try {
-				this.mEngine.onDrawFrame(pGL);
+				this.mEngine.onRenderFrame(pGL);
 			} catch (final InterruptedException e) {
 				Debug.e("GLThread interrupted!", e);
 			}

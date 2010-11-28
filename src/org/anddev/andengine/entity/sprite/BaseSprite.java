@@ -61,8 +61,8 @@ public abstract class BaseSprite extends BaseRectangle {
 	}
 
 	@Override
-	protected void onInitDraw(final GL10 pGL) {
-		super.onInitDraw(pGL);
+	protected void onInitRender(final GL10 pGL) {
+		super.onInitRender(pGL);
 		GLHelper.enableTextures(pGL);
 		GLHelper.enableTexCoordArray(pGL);
 	}
