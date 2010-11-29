@@ -2,16 +2,16 @@ package org.anddev.andengine.entity.sprite;
 
 import java.util.Arrays;
 
+import org.anddev.andengine.engine.handler.IUpdateHandler;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
-import org.anddev.andengine.opengl.vertex.RectangleVertexBuffer;
 import org.anddev.andengine.util.MathUtils;
 import org.anddev.andengine.util.constants.TimeConstants;
 
 /**
  * @author Nicolas Gramlich
- * @since 15:25:46 - 10.03.2010
+ * @since 18:17:37 - 28.11.2010
  */
-public class AnimatedSprite extends TiledSprite implements TimeConstants {
+public class AnimatedSpriteRenderer extends TiledSpriteRenderer implements IUpdateHandler, TimeConstants {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -39,20 +39,8 @@ public class AnimatedSprite extends TiledSprite implements TimeConstants {
 	// Constructors
 	// ===========================================================
 
-	public AnimatedSprite(final float pX, final float pY, final TiledTextureRegion pTiledTextureRegion) {
-		super(pX, pY, pTiledTextureRegion);
-	}
-
-	public AnimatedSprite(final float pX, final float pY, final float pTileWidth, final float pTileHeight, final TiledTextureRegion pTiledTextureRegion) {
-		super(pX, pY, pTileWidth, pTileHeight, pTiledTextureRegion);
-	}
-
-	public AnimatedSprite(final float pX, final float pY, final TiledTextureRegion pTiledTextureRegion, final RectangleVertexBuffer pRectangleVertexBuffer) {
-		super(pX, pY, pTiledTextureRegion, pRectangleVertexBuffer);
-	}
-
-	public AnimatedSprite(final float pX, final float pY, final float pTileWidth, final float pTileHeight, final TiledTextureRegion pTiledTextureRegion, final RectangleVertexBuffer pRectangleVertexBuffer) {
-		super(pX, pY, pTileWidth, pTileHeight, pTiledTextureRegion, pRectangleVertexBuffer);
+	public AnimatedSpriteRenderer(final TiledTextureRegion pTiledTextureRegion) {
+		super(pTiledTextureRegion);
 	}
 
 	// ===========================================================
@@ -68,20 +56,19 @@ public class AnimatedSprite extends TiledSprite implements TimeConstants {
 	// ===========================================================
 
 	@Override
-	protected void onManagedUpdate(final float pSecondsElapsed) {
-		super.onManagedUpdate(pSecondsElapsed);
+	public void onUpdate(final float pSecondsElapsed) {
 		if(this.mAnimationRunning) {
-			final long nanoSecondsElapsed = (long)(pSecondsElapsed * NANOSECONDSPERSECOND);
+			final long nanoSecondsElapsed = (long)(pSecondsElapsed * TimeConstants.NANOSECONDSPERSECOND);
 			this.mAnimationProgress += nanoSecondsElapsed;
 
 			if(this.mAnimationProgress > this.mAnimationDuration) {
 				this.mAnimationProgress %= this.mAnimationDuration;
-				if(this.mInitialLoopCount != LOOP_CONTINUOUS) {
+				if(this.mInitialLoopCount != AnimatedSpriteRenderer.LOOP_CONTINUOUS) {
 					this.mLoopCount--;
 				}
 			}
 
-			if(this.mInitialLoopCount == LOOP_CONTINUOUS || this.mLoopCount >= 0) {
+			if(this.mInitialLoopCount == AnimatedSpriteRenderer.LOOP_CONTINUOUS || this.mLoopCount >= 0) {
 				final int currentFrameIndex = this.calculateCurrentFrameIndex();
 				this.setCurrentTileIndex(this.mFirstTileIndex + currentFrameIndex);
 			} else {
@@ -91,6 +78,11 @@ public class AnimatedSprite extends TiledSprite implements TimeConstants {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void reset() {
+
 	}
 
 	// ===========================================================
@@ -119,53 +111,53 @@ public class AnimatedSprite extends TiledSprite implements TimeConstants {
 		return frameCount - 1;
 	}
 
-	public AnimatedSprite animate(final long pFrameDurationEach) {
+	public AnimatedSpriteRenderer animate(final long pFrameDurationEach) {
 		return this.animate(pFrameDurationEach, true);
 	}
 
-	public AnimatedSprite animate(final long pFrameDurationEach, final boolean pLoop) {
-		return this.animate(pFrameDurationEach, (pLoop) ? LOOP_CONTINUOUS : 0, null);
+	public AnimatedSpriteRenderer animate(final long pFrameDurationEach, final boolean pLoop) {
+		return this.animate(pFrameDurationEach, (pLoop) ? AnimatedSpriteRenderer.LOOP_CONTINUOUS : 0, null);
 	}
 
-	public AnimatedSprite animate(final long pFrameDurationEach, final int pLoopCount) {
+	public AnimatedSpriteRenderer animate(final long pFrameDurationEach, final int pLoopCount) {
 		return this.animate(pFrameDurationEach, pLoopCount, null);
 	}
 
-	public AnimatedSprite animate(final long pFrameDurationEach, final boolean pLoop, final IAnimationListener pAnimationListener) {
-		return this.animate(pFrameDurationEach, (pLoop) ? LOOP_CONTINUOUS : 0, pAnimationListener);
+	public AnimatedSpriteRenderer animate(final long pFrameDurationEach, final boolean pLoop, final IAnimationListener pAnimationListener) {
+		return this.animate(pFrameDurationEach, (pLoop) ? AnimatedSpriteRenderer.LOOP_CONTINUOUS : 0, pAnimationListener);
 	}
 
-	public AnimatedSprite animate(final long pFrameDurationEach, final int pLoopCount, final IAnimationListener pAnimationListener) {
-		final long[] frameDurations = new long[this.getTextureRegion().getTileCount()];
+	public AnimatedSpriteRenderer animate(final long pFrameDurationEach, final int pLoopCount, final IAnimationListener pAnimationListener) {
+		final long[] frameDurations = new long[this.mTiledTextureRegion.getTileCount()];
 		Arrays.fill(frameDurations, pFrameDurationEach);
 		return this.animate(frameDurations, pLoopCount, pAnimationListener);
 	}
 
-	public AnimatedSprite animate(final long[] pFrameDurations) {
+	public AnimatedSpriteRenderer animate(final long[] pFrameDurations) {
 		return this.animate(pFrameDurations, true);
 	}
 
-	public AnimatedSprite animate(final long[] pFrameDurations, final boolean pLoop) {
-		return this.animate(pFrameDurations, (pLoop) ? LOOP_CONTINUOUS : 0, null);
+	public AnimatedSpriteRenderer animate(final long[] pFrameDurations, final boolean pLoop) {
+		return this.animate(pFrameDurations, (pLoop) ? AnimatedSpriteRenderer.LOOP_CONTINUOUS : 0, null);
 	}
 
-	public AnimatedSprite animate(final long[] pFrameDurations, final int pLoopCount) {
+	public AnimatedSpriteRenderer animate(final long[] pFrameDurations, final int pLoopCount) {
 		return this.animate(pFrameDurations, pLoopCount, null);
 	}
 
-	public AnimatedSprite animate(final long[] pFrameDurations, final boolean pLoop, final IAnimationListener pAnimationListener) {
-		return this.animate(pFrameDurations, (pLoop) ? LOOP_CONTINUOUS : 0, pAnimationListener);
+	public AnimatedSpriteRenderer animate(final long[] pFrameDurations, final boolean pLoop, final IAnimationListener pAnimationListener) {
+		return this.animate(pFrameDurations, (pLoop) ? AnimatedSpriteRenderer.LOOP_CONTINUOUS : 0, pAnimationListener);
 	}
 
-	public AnimatedSprite animate(final long[] pFrameDurations, final int pLoopCount, final IAnimationListener pAnimationListener) {
-		return this.animate(pFrameDurations, 0, this.getTextureRegion().getTileCount() - 1, pLoopCount, pAnimationListener);
+	public AnimatedSpriteRenderer animate(final long[] pFrameDurations, final int pLoopCount, final IAnimationListener pAnimationListener) {
+		return this.animate(pFrameDurations, 0, this.mTiledTextureRegion.getTileCount() - 1, pLoopCount, pAnimationListener);
 	}
 
-	public AnimatedSprite animate(final long[] pFrameDurations, final int pFirstTileIndex, final int pLastTileIndex, final boolean pLoop) {
-		return this.animate(pFrameDurations, pFirstTileIndex, pLastTileIndex, (pLoop) ? LOOP_CONTINUOUS : 0, null);
+	public AnimatedSpriteRenderer animate(final long[] pFrameDurations, final int pFirstTileIndex, final int pLastTileIndex, final boolean pLoop) {
+		return this.animate(pFrameDurations, pFirstTileIndex, pLastTileIndex, (pLoop) ? AnimatedSpriteRenderer.LOOP_CONTINUOUS : 0, null);
 	}
 
-	public AnimatedSprite animate(final long[] pFrameDurations, final int pFirstTileIndex, final int pLastTileIndex, final int pLoopCount) {
+	public AnimatedSpriteRenderer animate(final long[] pFrameDurations, final int pFirstTileIndex, final int pLastTileIndex, final int pLoopCount) {
 		return this.animate(pFrameDurations, pFirstTileIndex, pLastTileIndex, pLoopCount, null);
 	}
 
@@ -176,7 +168,7 @@ public class AnimatedSprite extends TiledSprite implements TimeConstants {
 	 * @param pLoopCount
 	 * @param pAnimationListener
 	 */
-	public AnimatedSprite animate(final long[] pFrameDurations, final int pFirstTileIndex, final int pLastTileIndex, final int pLoopCount, final IAnimationListener pAnimationListener) {
+	public AnimatedSpriteRenderer animate(final long[] pFrameDurations, final int pFirstTileIndex, final int pLastTileIndex, final int pLoopCount, final IAnimationListener pAnimationListener) {
 		if(pLastTileIndex - pFirstTileIndex < 1) {
 			throw new IllegalArgumentException("An animation needs at least two tiles to animate between.");
 		}
@@ -199,7 +191,7 @@ public class AnimatedSprite extends TiledSprite implements TimeConstants {
 		}
 
 		final long[] frameEndsInNanoseconds = this.mFrameEndsInNanoseconds;
-		MathUtils.arraySumInto(pFrameDurations, frameEndsInNanoseconds, NANOSECONDSPERMILLISECOND);
+		MathUtils.arraySumInto(pFrameDurations, frameEndsInNanoseconds, TimeConstants.NANOSECONDSPERMILLISECOND);
 
 		final long lastFrameEnd = frameEndsInNanoseconds[this.mFrameCount - 1];
 		this.mAnimationDuration = lastFrameEnd;
@@ -223,6 +215,6 @@ public class AnimatedSprite extends TiledSprite implements TimeConstants {
 		// Fields
 		// ===========================================================
 
-		public void onAnimationEnd(final AnimatedSprite pAnimatedSprite);
+		public void onAnimationEnd(final AnimatedSpriteRenderer pAnimatedSpriteRenderer);
 	}
 }

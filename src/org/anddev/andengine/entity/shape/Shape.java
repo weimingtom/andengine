@@ -5,7 +5,7 @@ import javax.microedition.khronos.opengles.GL10;
 import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.entity.Entity;
 import org.anddev.andengine.input.touch.TouchEvent;
-import org.anddev.andengine.opengl.util.GLHelper;
+import org.anddev.andengine.opengl.vertex.VertexBuffer;
 import org.anddev.andengine.util.modifier.IModifier;
 import org.anddev.andengine.util.modifier.ModifierList;
 
@@ -17,12 +17,6 @@ public abstract class Shape extends Entity implements IShape {
 	// ===========================================================
 	// Constants
 	// ===========================================================
-
-	public static final int BLENDFUNCTION_SOURCE_DEFAULT = GL10.GL_SRC_ALPHA;
-	public static final int BLENDFUNCTION_DESTINATION_DEFAULT = GL10.GL_ONE_MINUS_SRC_ALPHA;
-
-	public static final int BLENDFUNCTION_SOURCE_PREMULTIPLYALPHA_DEFAULT = GL10.GL_ONE;
-	public static final int BLENDFUNCTION_DESTINATION_PREMULTIPLYALPHA_DEFAULT = GL10.GL_ONE_MINUS_SRC_ALPHA;
 
 	// ===========================================================
 	// Fields
@@ -60,12 +54,10 @@ public abstract class Shape extends Entity implements IShape {
 
 	private boolean mUpdatePhysics = true;
 
-	protected int mSourceBlendFunction = BLENDFUNCTION_SOURCE_DEFAULT;
-	protected int mDestinationBlendFunction = BLENDFUNCTION_DESTINATION_DEFAULT;
-
 	private final ModifierList<IShape> mShapeModifiers = new ModifierList<IShape>(this);
 
 	private boolean mCullingEnabled = false;
+	private IRenderer mRenderer;
 
 	// ===========================================================
 	// Constructors
@@ -292,6 +284,7 @@ public abstract class Shape extends Entity implements IShape {
 		this.mRotationCenterY = pRotationCenterY;
 	}
 
+	@Override
 	public boolean isScaled() {
 		return this.mScaleX != 1 || this.mScaleY != 1;
 	}
@@ -379,12 +372,6 @@ public abstract class Shape extends Entity implements IShape {
 	}
 
 	@Override
-	public void setBlendFunction(final int pSourceBlendFunction, final int pDestinationBlendFunction) {
-		this.mSourceBlendFunction = pSourceBlendFunction;
-		this.mDestinationBlendFunction = pDestinationBlendFunction;
-	}
-
-	@Override
 	public float getWidthScaled() {
 		return this.getWidth() * this.mScaleX;
 	}
@@ -409,6 +396,18 @@ public abstract class Shape extends Entity implements IShape {
 		this.mShapeModifiers.clear();
 	}
 
+	public IRenderer getRenderer() {
+		return this.mRenderer;
+	}
+
+	public void setRenderer(final IRenderer pRenderer) {
+		this.mRenderer = pRenderer;
+	}
+
+	protected void updateVertexBuffer() {
+		this.onUpdateVertexBuffer();
+	}
+
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
@@ -428,9 +427,6 @@ public abstract class Shape extends Entity implements IShape {
 	protected void onPositionChanged(){
 
 	}
-
-	protected abstract void onApplyVertices(final GL10 pGL);
-	protected abstract void renderVertices(final GL10 pGL, final Camera pCamera);
 
 	@Override
 	protected void onManagedUpdate(final float pSecondsElapsed) {
@@ -465,61 +461,7 @@ public abstract class Shape extends Entity implements IShape {
 	@Override
 	protected void onManagedRender(final GL10 pGL, final Camera pCamera) {
 		if(this.mCullingEnabled == false || this.isCulled(pCamera) == false) {
-			this.onInitRender(pGL);
-
-			pGL.glPushMatrix();
-			{
-				this.onApplyVertices(pGL);
-				this.onApplyTransformations(pGL);
-				this.renderVertices(pGL, pCamera);
-			}
-			pGL.glPopMatrix();
-		}
-	}
-
-	protected void onInitRender(final GL10 pGL) {
-		GLHelper.setColor(pGL, this.mRed, this.mGreen, this.mBlue, this.mAlpha);
-
-		GLHelper.enableVertexArray(pGL);
-		GLHelper.blendFunction(pGL, this.mSourceBlendFunction, this.mDestinationBlendFunction);
-	}
-
-	protected void onApplyTransformations(final GL10 pGL) {
-		this.applyTranslation(pGL);
-
-		this.applyRotation(pGL);
-
-		this.applyScale(pGL);
-	}
-
-	protected void applyTranslation(final GL10 pGL) {
-		pGL.glTranslatef(this.mX, this.mY, 0);
-	}
-
-	protected void applyRotation(final GL10 pGL) {
-		final float rotation = this.mRotation;
-
-		if(rotation != 0) {
-			final float rotationCenterX = this.mRotationCenterX;
-			final float rotationCenterY = this.mRotationCenterY;
-
-			pGL.glTranslatef(rotationCenterX, rotationCenterY, 0);
-			pGL.glRotatef(rotation, 0, 0, 1);
-			pGL.glTranslatef(-rotationCenterX, -rotationCenterY, 0);
-		}
-	}
-
-	protected void applyScale(final GL10 pGL) {
-		final float scaleX = this.mScaleX;
-		final float scaleY = this.mScaleY;
-
-		if(scaleX != 1 || scaleY != 1) {
-			final float scaleCenterX = this.mScaleCenterX;
-			final float scaleCenterY = this.mScaleCenterY;
-
-			pGL.glTranslatef(scaleCenterX, scaleCenterY, 0);
-			pGL.glScalef(scaleX, scaleY, 1);
-			pGL.glTranslatef(-scaleCenterX, -scaleCenterY, 0);
+			this.mRenderer.onRender(this, pGL, pCamera);
 		}
 	}
 
@@ -544,9 +486,6 @@ public abstract class Shape extends Entity implements IShape {
 		this.mGreen = 1.0f;
 		this.mBlue = 1.0f;
 		this.mAlpha = 1.0f;
-
-		this.mSourceBlendFunction = BLENDFUNCTION_SOURCE_DEFAULT;
-		this.mDestinationBlendFunction = BLENDFUNCTION_DESTINATION_DEFAULT;
 
 		this.mShapeModifiers.reset();
 	}

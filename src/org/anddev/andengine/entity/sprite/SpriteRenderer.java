@@ -2,17 +2,18 @@ package org.anddev.andengine.entity.sprite;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import org.anddev.andengine.entity.primitive.BaseRectangle;
-import org.anddev.andengine.opengl.texture.region.BaseTextureRegion;
+import org.anddev.andengine.engine.camera.Camera;
+import org.anddev.andengine.entity.shape.BaseRenderer;
+import org.anddev.andengine.entity.shape.IRenderer;
+import org.anddev.andengine.entity.shape.Shape;
+import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.opengl.util.GLHelper;
-import org.anddev.andengine.opengl.vertex.RectangleVertexBuffer;
 
 /**
- * TODO This class will be gone more or less, when the RenderHandler mechanism exists.
  * @author Nicolas Gramlich
- * @since 11:38:53 - 08.03.2010
+ * @since 15:03:10 - 28.11.2010
  */
-public abstract class BaseSprite extends BaseRectangle {
+public class SpriteRenderer extends BaseRenderer {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -21,22 +22,13 @@ public abstract class BaseSprite extends BaseRectangle {
 	// Fields
 	// ===========================================================
 
-	protected final BaseTextureRegion mTextureRegion;
+	protected final TextureRegion mTextureRegion;
 
 	// ===========================================================
 	// Constructors
 	// ===========================================================
 
-	public BaseSprite(final float pX, final float pY, final float pWidth, final float pHeight, final BaseTextureRegion pTextureRegion) {
-		super(pX, pY, pWidth, pHeight);
-
-		this.mTextureRegion = pTextureRegion;
-		this.initBlendFunction();
-	}
-
-	public BaseSprite(final float pX, final float pY, final float pWidth, final float pHeight, final BaseTextureRegion pTextureRegion, final RectangleVertexBuffer pRectangleVertexBuffer) {
-		super(pX, pY, pWidth, pHeight, pRectangleVertexBuffer);
-
+	private SpriteRenderer(final TextureRegion pTextureRegion) {
 		this.mTextureRegion = pTextureRegion;
 		this.initBlendFunction();
 	}
@@ -45,7 +37,7 @@ public abstract class BaseSprite extends BaseRectangle {
 	// Getter & Setter
 	// ===========================================================
 
-	public BaseTextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return this.mTextureRegion;
 	}
 
@@ -54,23 +46,14 @@ public abstract class BaseSprite extends BaseRectangle {
 	// ===========================================================
 
 	@Override
-	public void reset() {
-		super.reset();
-
-		this.initBlendFunction();
-	}
-
-	@Override
-	protected void onInitRender(final GL10 pGL) {
-		super.onInitRender(pGL);
+	protected void onInitRender(final Shape pShape, final GL10 pGL) {
+		super.onInitRender(pShape, pGL);
 		GLHelper.enableTextures(pGL);
 		GLHelper.enableTexCoordArray(pGL);
 	}
 
 	@Override
-	protected void onApplyTransformations(final GL10 pGL) {
-		super.onApplyTransformations(pGL);
-
+	protected void renderVertices(final Shape pShape, final GL10 pGL, final Camera pCamera) {
 		this.mTextureRegion.onApply(pGL);
 	}
 
@@ -80,9 +63,13 @@ public abstract class BaseSprite extends BaseRectangle {
 
 	private void initBlendFunction() {
 		if(this.mTextureRegion.getTexture().getTextureOptions().mPreMultipyAlpha) {
-			this.setBlendFunction(BLENDFUNCTION_SOURCE_PREMULTIPLYALPHA_DEFAULT, BLENDFUNCTION_DESTINATION_PREMULTIPLYALPHA_DEFAULT);
+			this.setBlendFunction(IRenderer.BLENDFUNCTION_SOURCE_PREMULTIPLYALPHA_DEFAULT, IRenderer.BLENDFUNCTION_DESTINATION_PREMULTIPLYALPHA_DEFAULT);
 		}
 	}
+
+	// ===========================================================
+	// Methods
+	// ===========================================================
 
 	// ===========================================================
 	// Inner and Anonymous Classes
