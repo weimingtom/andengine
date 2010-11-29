@@ -100,5 +100,6 @@ public interface IShape extends IEntity, ITouchArea {
 
 	public boolean collidesWith(final IShape pOtherShape);
 
-	public void setBlendFunction(final int pSourceBlendFunction, final int pDestinationBlendFunction);
+	public IRenderer getRenderer();
+	public void setRenderer(final IRenderer pRenderer);
 }

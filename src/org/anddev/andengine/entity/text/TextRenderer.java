@@ -4,7 +4,9 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 
 import org.anddev.andengine.engine.camera.Camera;
-import org.anddev.andengine.entity.shape.RectangularShape;
+import org.anddev.andengine.entity.shape.BaseRenderer;
+import org.anddev.andengine.entity.shape.IRenderer;
+import org.anddev.andengine.entity.shape.Shape;
 import org.anddev.andengine.opengl.buffer.BufferObjectManager;
 import org.anddev.andengine.opengl.font.Font;
 import org.anddev.andengine.opengl.texture.buffer.TextTextureBuffer;
@@ -15,9 +17,9 @@ import org.anddev.andengine.util.StringUtils;
 
 /**
  * @author Nicolas Gramlich
- * @since 10:54:59 - 03.04.2010
+ * @since 18:45:22 - 28.11.2010
  */
-public class Text extends RectangularShape {
+public class TextRenderer extends BaseRenderer {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -43,16 +45,16 @@ public class Text extends RectangularShape {
 	// Constructors
 	// ===========================================================
 
-	public Text(final float pX, final float pY, final Font pFont, final String pText) {
-		this(pX, pY, pFont, pText, HorizontalAlign.LEFT);
+	public TextRenderer(final Font pFont, final String pText) {
+		this(pFont, pText, HorizontalAlign.LEFT);
 	}
 
-	public Text(final float pX, final float pY, final Font pFont, final String pText, final HorizontalAlign pHorizontalAlign) {
-		this(pX, pY, pFont, pText, pHorizontalAlign, pText.length() - StringUtils.countOccurrences(pText, '\n'));
+	public TextRenderer(final Font pFont, final String pText, final HorizontalAlign pHorizontalAlign) {
+		this(pFont, pText, pHorizontalAlign, pText.length() - StringUtils.countOccurrences(pText, '\n'));
 	}
 
-	protected Text(final float pX, final float pY, final Font pFont, final String pText, final HorizontalAlign pHorizontalAlign, final int pCharactersMaximum) {
-		super(pX, pY, 0, 0, new TextVertexBuffer(pCharactersMaximum, pHorizontalAlign, GL11.GL_STATIC_DRAW));
+	protected TextRenderer(final Font pFont, final String pText, final HorizontalAlign pHorizontalAlign, final int pCharactersMaximum) {
+		super(new TextVertexBuffer(pCharactersMaximum, pHorizontalAlign, GL11.GL_STATIC_DRAW));
 
 		this.mCharactersMaximum = pCharactersMaximum;
 		this.mVertexCount = TextVertexBuffer.VERTICES_PER_CHARACTER * this.mCharactersMaximum;
@@ -65,6 +67,48 @@ public class Text extends RectangularShape {
 
 		this.initBlendFunction();
 	}
+
+	// ===========================================================
+	// Getter & Setter
+	// ===========================================================
+
+	// ===========================================================
+	// Methods for/from SuperClass/Interfaces
+	// ===========================================================
+
+	public int getCharacterCount() {
+		return this.mCharactersMaximum;
+	}
+
+	@Override
+	public TextVertexBuffer getVertexBuffer() {
+		return (TextVertexBuffer)super.getVertexBuffer();
+	}
+
+	@Override
+	protected void onInitRender(final Shape pShape, final GL10 pGL) {
+		super.onInitRender(pShape, pGL);
+		GLHelper.enableTextures(pGL);
+		GLHelper.enableTexCoordArray(pGL);
+	}
+
+	@Override
+	protected void renderVertices(final Shape pShape, final GL10 pGL, final Camera pCamera) {
+		this.applyTexture(pGL);
+		pGL.glDrawArrays(GL10.GL_TRIANGLES, 0, this.mVertexCount);
+	}
+
+	@Override
+	protected void onUpdateVertexBuffer() {
+		final Font font = this.mFont;
+		if(font != null) {
+			this.getVertexBuffer().update(font, this.mMaximumLineWidth, this.mWidths, this.mLines);
+		}
+	}
+
+	// ===========================================================
+	// Methods
+	// ===========================================================
 
 	protected void updateText(final String pText) {
 		this.mText = pText;
@@ -105,53 +149,6 @@ public class Text extends RectangularShape {
 		this.mTextTextureBuffer.update(font, lines);
 		this.updateVertexBuffer();
 	}
-
-	// ===========================================================
-	// Getter & Setter
-	// ===========================================================
-
-	public int getCharacterCount() {
-		return this.mCharactersMaximum;
-	}
-
-	@Override
-	public TextVertexBuffer getVertexBuffer() {
-		return (TextVertexBuffer)super.getVertexBuffer();
-	}
-
-	// ===========================================================
-	// Methods for/from SuperClass/Interfaces
-	// ===========================================================
-
-	@Override
-	protected void onInitRender(final GL10 pGL) {
-		super.onInitRender(pGL);
-		GLHelper.enableTextures(pGL);
-		GLHelper.enableTexCoordArray(pGL);
-	}
-
-	@Override
-	protected void renderVertices(final GL10 pGL, final Camera pCamera) {
-		pGL.glDrawArrays(GL10.GL_TRIANGLES, 0, this.mVertexCount);
-	}
-
-	@Override
-	protected void onUpdateVertexBuffer() {
-		final Font font = this.mFont;
-		if(font != null) {
-			this.getVertexBuffer().update(font, this.mMaximumLineWidth, this.mWidths, this.mLines);
-		}
-	}
-
-	@Override
-	protected void onApplyTransformations(final GL10 pGL) {
-		super.onApplyTransformations(pGL);
-		this.applyTexture(pGL);
-	}
-
-	// ===========================================================
-	// Methods
-	// ===========================================================
 
 	private void initBlendFunction() {
 		if(this.mFont.getTexture().getTextureOptions().mPreMultipyAlpha) {
