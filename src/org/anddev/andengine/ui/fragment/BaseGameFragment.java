@@ -1,4 +1,4 @@
-package org.anddev.andengine.ui.fragment.compat;
+package org.anddev.andengine.ui.fragment;
 
 import org.anddev.andengine.audio.music.MusicManager;
 import org.anddev.andengine.audio.sound.SoundManager;
@@ -19,13 +19,13 @@ import org.anddev.andengine.ui.IGameInterface;
 import org.anddev.andengine.util.ActivityUtils;
 import org.anddev.andengine.util.Debug;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,15 +36,15 @@ import android.widget.FrameLayout.LayoutParams;
 /**
  * <p>Fragment implementation of {@link BaseGameActivity}</p>
  * 
- * <p>This implementation uses the {@link android.support.v4.app.Fragment} from the <a href="http://developer.android.com/sdk/compatibility-library.html">Compatibility Package</a>.
- * To use this class, you must include the Android Compatibility Package in your project.
- * If you want to use the native Android 3.0 (Honeycomb) support for Fragments, use {@link org.anddev.andengine.ui.fragment.BaseGameFragment}.</p>
+ * <p>This implementation uses the {@link android.app.Fragment} from Android 3.0 (Honeycomb).
+ * To use this class, you must target at least Android 3.0 (API level 11).
+ * If you want to use the compatibility library for Fragments, use {@link org.anddev.andengine.ui.fragment.compat.BaseGameFragment}.</p>
  *
  * <p>(c) 2011 Nicolas Gramlich<br>(c) 2011 Zynga Inc.</p>
  * 
  * @author Nicolas Gramlich
  * @author Scott Kennedy
- * @since 14:10:00 - 04.08.2010
+ * @since 21:30:00 - 10.08.2010
  */
 public abstract class BaseGameFragment extends Fragment implements IGameInterface {
  // ===========================================================
