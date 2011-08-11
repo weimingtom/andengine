@@ -3,13 +3,12 @@ package org.anddev.andengine.entity.modifier;
 import org.anddev.andengine.entity.IEntity;
 
 /**
- * (c) 2010 Nicolas Gramlich
  * (c) 2011 Zynga Inc.
  * 
  * @author Nicolas Gramlich
- * @since 16:12:52 - 19.03.2010
+ * @since 14:15:52 - 10.08.2011
  */
-public class RotationByModifier extends SingleValueChangeEntityModifier {
+public class MoveByModifier extends DoubleValueChangeEntityModifier {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -22,21 +21,21 @@ public class RotationByModifier extends SingleValueChangeEntityModifier {
 	// Constructors
 	// ===========================================================
 
-	public RotationByModifier(final float pDuration, final float pRotation) {
-		super(pDuration, pRotation);
+	public MoveByModifier(final float pDuration, final float pX, final float pY) {
+		super(pDuration, pX, pY);
 	}
 
-	public RotationByModifier(final float pDuration, final float pRotation, final IEntityModifierListener pEntityModifierListener) {
-		super(pDuration, pRotation, pEntityModifierListener);
+	public MoveByModifier(final float pDuration, final float pX, final float pY, final IEntityModifierListener pEntityModifierListener) {
+		super(pDuration, pX, pY, pEntityModifierListener);
 	}
 
-	protected RotationByModifier(final RotationByModifier pRotationByModifier) {
-		super(pRotationByModifier);
+	protected MoveByModifier(final DoubleValueChangeEntityModifier pDoubleValueChangeEntityModifier) {
+		super(pDoubleValueChangeEntityModifier);
 	}
 
 	@Override
-	public RotationByModifier clone(){
-		return new RotationByModifier(this);
+	public MoveByModifier clone(){
+		return new MoveByModifier(this);
 	}
 
 	// ===========================================================
@@ -48,8 +47,8 @@ public class RotationByModifier extends SingleValueChangeEntityModifier {
 	// ===========================================================
 
 	@Override
-	protected void onChangeValue(final float pSecondsElapsed, final IEntity pEntity, final float pRotation) {
-		pEntity.setRotation(pEntity.getRotation() + pRotation);
+	protected void onChangeValues(final float pSecondsElapsed, final IEntity pEntity, final float pX, final float pY) {
+		pEntity.setPosition(pEntity.getX() + pX, pEntity.getY() + pY);
 	}
 
 	// ===========================================================
