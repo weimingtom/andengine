@@ -28,6 +28,8 @@ public abstract class PVRCCZTexture extends PVRTexture {
 	// Fields
 	// ===========================================================
 
+	private CCZHeader mCCZHeader;
+
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -60,9 +62,21 @@ public abstract class PVRCCZTexture extends PVRTexture {
 	protected final InputStream getInputStream() throws IOException {
 		final InputStream inputStream = this.onGetInputStream();
 
-		final CCZHeader cczHeader = new CCZHeader(StreamUtils.streamToBytes(inputStream, CCZHeader.SIZE));
+		this.mCCZHeader = new CCZHeader(StreamUtils.streamToBytes(inputStream, CCZHeader.SIZE));
 
-		return cczHeader.getCCZCompressionFormat().wrap(inputStream, cczHeader.getUncompressedSize());
+		return this.mCCZHeader.getCCZCompressionFormat().wrap(inputStream);
+	}
+
+	@Override
+	protected ByteBuffer getPVRDataBuffer() throws IOException {
+		final InputStream inputStream = this.getInputStream();
+		try {
+			final byte[] data = new byte[this.mCCZHeader.getUncompressedSize()];
+			StreamUtils.copy(inputStream, data);
+			return ByteBuffer.wrap(data);
+		} finally {
+			StreamUtils.close(inputStream);
+		}
 	}
 
 	// ===========================================================
@@ -178,12 +192,12 @@ public abstract class PVRCCZTexture extends PVRTexture {
 			this.mID = pID;
 		}
 
-		public InputStream wrap(final InputStream pInputStream, final int pUncompressedSize) throws IOException {
+		public InputStream wrap(final InputStream pInputStream) throws IOException {
 			switch(this) {
 				case GZIP:
-					return new GZIPInputStream(pInputStream, pUncompressedSize);
+					return new GZIPInputStream(pInputStream);
 				case ZLIB:
-					return new InflaterInputStream(pInputStream, new Inflater(), pUncompressedSize);
+					return new InflaterInputStream(pInputStream, new Inflater());
 				case NONE:
 				case BZIP2:
 				default:
