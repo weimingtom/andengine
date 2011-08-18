@@ -33,10 +33,10 @@ public class Camera implements IUpdateHandler {
 	// Fields
 	// ===========================================================
 
-	private float mMinX;
-	private float mMaxX;
-	private float mMinY;
-	private float mMaxY;
+	protected float mMinX;
+	protected float mMaxX;
+	protected float mMinY;
+	protected float mMaxY;
 
 	private float mNearZ = -1.0f;
 	private float mFarZ = 1.0f;
