@@ -61,6 +61,16 @@ public abstract class BaseGameFragment extends Fragment implements IGameInterfac
     protected boolean mHasWindowFocused;
     private boolean mPaused;
     private boolean mGameLoaded;
+    
+    /**
+     * If true, we will pause rendering when the Fragment is paused.  If false, we will not.
+     */
+    private boolean mShouldPauseRendering = true;
+    
+    /**
+     * If true, we paused mRenderSurfaceView, so we need to resume it.
+     */
+    private boolean mPausedRendering = true;
 
     // ===========================================================
     // Constructors
@@ -120,6 +130,11 @@ public abstract class BaseGameFragment extends Fragment implements IGameInterfac
 
     @Override
     public void onDestroy() {
+        if (!this.mPausedRendering) {
+            this.doPause();
+            this.mPausedRendering = true;
+        }
+        
         super.onDestroy();
 
         this.mEngine.interruptUpdateThread();
@@ -160,6 +175,14 @@ public abstract class BaseGameFragment extends Fragment implements IGameInterfac
     public MusicManager getMusicManager() {
         return this.mEngine.getMusicManager();
     }
+    
+    /**
+     * Sets whether the Fragment should pause its rendering after hitting onPause.
+     * @param pShouldPauseRendering true to pause rendering in onPause, false to keep it going
+     */
+    public void setShouldPauseRendering(final boolean pShouldPauseRendering) {
+        this.mShouldPauseRendering = pShouldPauseRendering;
+    }
 
     // ===========================================================
     // Methods for/from SuperClass/Interfaces
@@ -190,20 +213,29 @@ public abstract class BaseGameFragment extends Fragment implements IGameInterfac
 
         this.mPaused = false;
         this.acquireWakeLock(this.mEngine.getEngineOptions().getWakeLockOptions());
-        this.mEngine.onResume();
 
-        this.mRenderSurfaceView.onResume();
-        this.mEngine.start();
+        if (this.mPausedRendering) {
+            this.mEngine.onResume();
+            this.mRenderSurfaceView.onResume();
+            this.mPausedRendering = false;
+            
+            this.mEngine.start();
+        }
         this.onResumeGame();
     }
 
     private void doPause() {
         this.mPaused = true;
         this.releaseWakeLock();
-
-        this.mEngine.onPause();
-        this.mEngine.stop();
-        this.mRenderSurfaceView.onPause();
+        
+        if (this.mShouldPauseRendering) {
+            this.mEngine.onPause();
+            this.mEngine.stop();
+            
+            this.mRenderSurfaceView.onPause();
+            this.mPausedRendering = true;
+        }
+        
         this.onPauseGame();
     }
 
