@@ -1,4 +1,4 @@
-package com.zynga.hanging.andengine;
+package org.anddev.andengine.entity.modifier;
 
 import org.anddev.andengine.entity.IEntity;
 import org.anddev.andengine.entity.modifier.CubicBezierMoveModifier;
